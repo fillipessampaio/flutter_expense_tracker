@@ -65,10 +65,16 @@ class _ExpensesState extends State<Expenses> {
 
   @override
   Widget build(BuildContext context) {
-    Widget mainContent = const Center(child: Text('No expense registered. Please add some.'));
-    
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
+    final screenIsPortrait = height >= width;
+
+    Widget mainContent =
+        const Center(child: Text('No expense registered. Please add some.'));
+
     if (_registeredExpenses.isNotEmpty) {
-      mainContent = ExpensesList(expenses: _registeredExpenses, onRemoveExpense: _removeExpense);
+      mainContent = ExpensesList(
+          expenses: _registeredExpenses, onRemoveExpense: _removeExpense);
     }
 
     return Scaffold(
@@ -81,14 +87,21 @@ class _ExpensesState extends State<Expenses> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Chart(expenses: _registeredExpenses),
-          Expanded(
-            child: mainContent
-          ),
-        ],
-      ),
+      body: screenIsPortrait
+          ? Column(
+              children: [
+                Chart(expenses: _registeredExpenses),
+                Expanded(child: mainContent),
+              ],
+            )
+          : Row(
+              children: [
+                Expanded(
+                  child: Chart(expenses: _registeredExpenses),
+                ),
+                Expanded(child: mainContent),
+              ],
+            ),
     );
   }
 }
